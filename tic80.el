@@ -42,7 +42,7 @@
   :group `tic80
   :keymap tic80-minor-mode-map)
 
-(defcustom tic80-path "~/TIC-80/build/bin/tic80"
+(defcustom tic80-path (executable-find "tic80")
   "Path to tic80"
   :type `string
   :group `tic80)
@@ -53,8 +53,11 @@
   (save-buffer)
   (when (get-buffer "*tic80-output*")
     (display-buffer (current-buffer)))
-  (call-process tic80-path nil '(:file "output-log.txt") t
-		(buffer-file-name) "--skip"))
+  (start-process "tic80-process"
+		 "*tic80-output*"
+		 tic80-path
+		 "--fs" default-directory
+		 (buffer-file-name) "--skip"))
 
 (provide `tic80)
 
